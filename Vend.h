@@ -66,7 +66,10 @@ ostream &operator<<(ostream &output, Vend &Machine)
 	return output;
 }
 
-//Function allows user to buy items, throws a status to main for error handling
+//profits varialbe used by other subroutines
+int purchased;
+
+//Function queriesstock of items, throws a status to main for error handling
 //receives an array of Vend type with all parameters needed
 int buy(Vend product[], int itemID)
 {
@@ -74,23 +77,54 @@ int buy(Vend product[], int itemID)
 	{
 		if(product[itemID-1].getQty()>0)		//if there is inventory...
 		{
-			cout << "Inventory OK, item available!"<<endl; 
+			return 0; 
 		}
+		return -1;		//we have a error--no stock
 	}
-	else return -1;		//we have an error
+	else return -2;		//we have an error--out of range
+}
+
+//performs the purchase process and returns chage if required.
+int purchasing(Vend product[],int itemID,int paidval)
+{
+	if(paidval>=product[itemID-1].getProdCost())		//issue correct change
+	{
+		return 0;
+	}
+	else return -1;
 }
 
 //simply displays current inventory
-int display(Vend product[])
+int display(Vend product[],int a,int query)
 {
-	cout<<"Item Name\t\tPrice\t\tQty In Stock"<<endl;
-	for(int i=0;i<8;i++)
+	if(a == 0 && query == 0)			//for displaying whole inventory
 	{
+		cout<<"Item Name\t\tPrice\t\tQty In Stock"<<endl;
+		for(int i=0;i<8;i++)
+		{
 		cout<<i+1<<"."<<product[i];
+		}
+	return 0;
+	}
+		
+	if(a == 1)			//for confirming item to purchase
+	{
+		cout<<"Item Name\t\tPrice\t\tQty In Stock"<<endl;
+		cout<<query<<"."<<product[query-1];
 	}
 }
 
-//Coin return shows current state of machine eg. how much has been purchased
-int coinReturn;
+
+//Coin return returns to main current state of machine eg. how much has been purchased if 
+//value sent from main is 99. If not, the profit is kept at a running tally
+int coinReturn(Vend product[],int itemID)
+{
+	if (itemID!=99)
+	{
+		int purchased;
+		purchased+=product[itemID].getProdCost();
+	}
+	return purchased;
+}
 
 
